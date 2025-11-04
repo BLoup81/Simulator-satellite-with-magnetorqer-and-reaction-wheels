@@ -147,6 +147,7 @@ commandOption = 'quaternion';
 % Frame of reference to compare the attitude of the satellite
 frame = 'ECI';
 
+% sat.ODE(time, command, commandOption, orbit, frame)
 [T,Y,U,M] = sat.ODE(time,command,commandOption,orb,frame);
 
 figure(1);
@@ -178,9 +179,12 @@ close all;
 %% Simulation 2
 
 % We use the same configuration but we use an adaptative command only on reaction wheels.
+% This control law com from:
+% Y. Lahana et al., “Comparison of adaptative control laws on a satellite attitude control benchmark,” HAL, 2023.
+
 % This simulation show that we can add state to the main model.
 
-additionState = [zeros(6,1)];%;zeros(3,1)];      % Addition of 2*6 states equal to 0 at the initial time
+additionState = [zeros(6,1)];      % Addition of 6 states equal to 0 at the initial time
 % [K_theta;K_omega]
 
 % Time
@@ -192,6 +196,7 @@ commandOption = 'cardan';
 % Frame of reference to compare the attitude of the satellite
 frame = 'ECI';
 
+% sat.ODE(time, command, commandOption, orbit, frame, initial_newState, derivative_newState)
 [T,Y,U,M] = sat.ODE(time,@command_exemple2,commandOption,orb,frame,additionState,@derivativeAdditionState_exemple2);
 
 figure(1);
@@ -235,7 +240,7 @@ close all;
 % This simulation show that we can add input parameters to the derivative
 % function of the additional states
 
-additionState = [zeros(6,1)];%;zeros(3,1)];      % Addition of 2*6 states equal to 0 at the initial time
+additionState = [zeros(6,1)];      % Addition of 6 states equal to 0 at the initial time
 % [K_theta;K_omega]
 
 % Time
@@ -251,6 +256,7 @@ frame = 'ECI';
 K_min = [0.002 1];
 K_max = [0.5 2];
 
+% sat.ODE(time, command, commandOption, orbit, frame, initial_newState, derivative_newState, varargin)
 [T,Y,U,M] = sat.ODE(time,@command_exemple2,commandOption,orb,frame,additionState,@derivativeAdditionState_2_exemple2,@projection_exemple2,step,K_max,K_min);
 
 figure(1);
