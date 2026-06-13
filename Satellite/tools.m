@@ -47,6 +47,7 @@ classdef tools
         
         
         function eci = ecef2eci(ecef,earthRotation,time)
+            % earthRotation must be in radian
         
             nb = length(time);
 
@@ -165,8 +166,13 @@ classdef tools
             end
         
             ecef = zeros(3,nb_lat);
+
+            flag = 0;
         
             for index = 1:nb_lat
+                if (abs(lat(index)) > 3.14) || (abs(lon(index)) > 3.14)
+                    flag = 1;
+                end
                 slat = sin(lat(index));
                 clat = cos(lat(index));
                 slon = sin(lon(index));
@@ -177,6 +183,10 @@ classdef tools
                        clat 0 -slat];
             
                 ecef(:,index) = rot*ned(:,index);
+            end
+
+            if (flag == 1)
+                warning('NED2ECEF:Unit',"Check if geocentric coordinate inputs are in radian");
             end
         end
 
@@ -190,10 +200,10 @@ classdef tools
                 outputCoordinates = tools.ned2ecef(geocentric(1,:),geocentric(2,:),inputCoordinate);
             elseif frame == "ECI"
                 ecef = tools.ned2ecef(geocentric(1,:),geocentric(2,:),inputCoordinate);
-                outputCoordinates = tools.ecef2eci(ecef,orbit.attractorBody.getRotation(),time);
+                outputCoordinates = tools.ecef2eci(ecef,orbit.attractorBody.getRotation()*pi/180,time);
             elseif frame == "LVLH"
                 ecef = tools.ned2ecef(geocentric(1,:),geocentric(2,:),inputCoordinate);
-                eci = tools.ecef2eci(ecef,orbit.attractorBody.getRotation(),time);
+                eci = tools.ecef2eci(ecef,orbit.attractorBody.getRotation()*pi/180,time);
                 outputCoordinates = tools.eci2lvlh(eci,orbit.getArgumentOfPeriapsis('rad'),orbit.getRAAN('rad'),orbit.getInclination('rad'),orbit.trueAnomaly(time));
             else
                 msg = "The frame " + frame + " is unknow";

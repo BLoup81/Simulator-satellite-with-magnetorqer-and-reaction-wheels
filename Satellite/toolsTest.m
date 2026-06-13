@@ -298,6 +298,21 @@ catch ME
     assert(strcmp(ME.identifier,'ned2ecef:DimensionError'),'Latitude, longitude and NED coordinates must have the same size');
 end
 
+%% Test 6.3 NED to ECEF, input unit warning
+
+% Input data:
+lat = 10;        % 4 is not in radian [-3.14, 3.14]
+lon = 0;
+ned = [1;1;1];
+
+warning('off','NED2ECEF:Unit');     % Desactivation of the display
+tools.ned2ecef(lat,lon,ned);
+
+[msg,id] = lastwarn();
+assert(strcmp(id,'NED2ECEF:Unit'));
+lastwarn('');                       % Reset the last warning
+warning('off','NED2ECEF:Unit');     % Activation of the display
+
 %% Test 7.1: Conversion coordinates, NED coordinates
 
 % Input data:
@@ -357,16 +372,15 @@ nb = numel(time);
 
 inputCoordinates = [ones(1,nb);2*ones(1,nb);3*ones(1,nb)];
 
-
 % Expected output data:
-outputCoordinates_expect = [-1.449895 1.65836;
-                            2.5982 -3.125263;
-                            -2.268736 1.217610];
+outputCoordinates_expect = [-3.7398352 -2.4339589;
+                            0.0802688 0.3354843;
+                            -0.0847911 -2.8219309];
 
 % Test:
 [lat,lon,alt] = orb.geocentric(time);
 
-geocentric = [lat;lon];
+geocentric = [lat;lon]*pi/180;
 
 outputCoordinates_test = tools.conversionCoordinates(inputCoordinates,geocentric,orb,time,'ECEF');
 
@@ -395,14 +409,14 @@ nb = numel(time);
 inputCoordinates = [ones(1,nb);2*ones(1,nb);3*ones(1,nb)];
 
 % Expected output data:
-outputCoordinates_expect = [-1.449895 1.881052;
-                            2.5982 -2.996509
-                            -2.268736 1.217610];
+outputCoordinates_expect = [-3.7398352 -2.4343827;
+                            0.0802688 0.3323948;
+                            -0.0847911 -2.8219309];
 
 % Test:
 [lat,lon,alt] = orb.geocentric(time);
 
-geocentric = [lat;lon];
+geocentric = [lat;lon]*pi/180;
 
 outputCoordinates_test = tools.conversionCoordinates(inputCoordinates,geocentric,orb,time,'ECI');
 
@@ -431,14 +445,14 @@ nb = numel(time);
 inputCoordinates = [ones(1,nb);2*ones(1,nb);3*ones(1,nb)];
 
 % Expected output data:
-outputCoordinates_expect = [-1.997542 0.011082;
-                            3.089714 -3.594459;
-                            0.680803 -1.039107];
+outputCoordinates_expect = [1.1098177 1.5501684;
+                            1.9412121 1.6506795;
+                            3.00 2.9786296];
 
 % Test:
 [lat,lon,alt] = orb.geocentric(time);
 
-geocentric = [lat;lon];
+geocentric = [lat;lon]*pi/180;
 
 outputCoordinates_test = tools.conversionCoordinates(inputCoordinates,geocentric,orb,time,'LVLH');
 

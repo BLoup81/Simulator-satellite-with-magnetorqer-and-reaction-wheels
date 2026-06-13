@@ -240,7 +240,7 @@ close all;
 % This simulation show that we can add input parameters to the derivative
 % function of the additional states
 
-additionState = [zeros(6,1)];      % Addition of 6 states equal to 0 at the initial time
+additionState = zeros(6,1);      % Addition of 6 states equal to 0 at the initial time
 % [K_theta;K_omega]
 
 % Time

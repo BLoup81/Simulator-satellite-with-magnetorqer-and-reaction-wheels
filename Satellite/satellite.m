@@ -637,17 +637,15 @@ classdef satellite
             % Magnetic field
             if exist("orbit","var")       % Compute the orbit trajectory and the earth magnetic field
                 [lat,lon,alt] = orbit.geocentric(time);
-                addpath("earth_magnetic_field\m_IGRF-main\");
-                resultIGRF = igrf(orbit.getDateInitial(),lat,lon,alt,'geocentric');
-                for i=1:nb
-                    magneticField(1,i) = resultIGRF(i,1);
-                    magneticField(2,i) = resultIGRF(i,2);
-                    magneticField(3,i) = resultIGRF(i,3);
-                end
+                class_dir = fileparts(mfilename('fullpath'));
+                target_path = fullfile(class_dir, "earth_magnetic_field\m_IGRF-main\");
+                addpath(target_path);
+                magneticField = transpose(igrf(orbit.getDateInitial(),lat,lon,alt,'geocentric'));
+
                 if ~exist("frame","var")
                     frame = 'ECI';
                 end
-                magneticField = tools.conversionCoordinates(magneticField,[lat;lon],orbit,time,frame);
+                magneticField = tools.conversionCoordinates(magneticField,[lat;lon]*pi/180,orbit,time,frame);
             end
 
             % Creation of state vectors

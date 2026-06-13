@@ -317,7 +317,7 @@ fprintf("WARNING: The magnetic field is in the North-East-Down frame (NED)\n");
 fprintf("\n\n==============================================================\n");
 fprintf("Conversions:\n");
 
-fprintf("Quaternion / Euler's angles");
+fprintf("Quaternion / Euler's angles\n");
 % Quaternion -> Euler's angles
 euler = [pi;0;pi/2];
 quaternion = tools.euler2quater(euler);
